@@ -13,32 +13,32 @@ Author URI: http://project-p.jp/halt/
 
 @todo モバイルの時はモバイルのページに飛ばすようにする
 @todo 24h キャッシュをつける
-*/
+ */
 
 date_default_timezone_set('Asia/Tokyo');
 
 $RakutenLink = new RakutenLink();
 class RakutenLink {
 
-	public function __construct() {
-		add_shortcode('rakuten', array($this, 'short_code'));
-	}
+    public function __construct() {
+        add_shortcode('rakuten', array($this, 'short_code'));
+    }
 
-	// エントリ内の [rakuten]code[/rakuten] を置換する。
-	public function short_code($atts, $content = null) {
-		$classcode = str_replace(":", "", $content);
+    // エントリ内の [rakuten]code[/rakuten] を置換する。
+    public function short_code($atts, $content = null) {
+        $classcode = str_replace(":", "", $content);
 
-		if ( $this->is_mobile() ){
+        if ( $this->is_mobile() ){
             $rakutencode = '<div class="rakuten_m_details">';
             $rakutencode .= $this->get_data($content) . '</div>';
-		} else {
-			$rakutencode = '<div class="rakuten_details">' . $this->get_data(htmlspecialchars($content)) . '</div>';
-		}
+        } else {
+            $rakutencode = '<div class="rakuten_details">' . $this->get_data(htmlspecialchars($content)) . '</div>';
+        }
 
         return $this->search($content);
-		return $rakutencode;
+        return $rakutencode;
 
-	}
+    }
 
     private function search($keyword, $limit = 1)
     {
@@ -48,9 +48,9 @@ class RakutenLink {
         $afi_id = '';
 
         if ($limit === 1) {
-          $hits = '2';
+            $hits = '2';
         } else {
-          $hits = $limit;
+            $hits = $limit;
         }
 
         // 楽天商品検索
@@ -85,7 +85,7 @@ class RakutenLink {
             }
 
             if ($html !== '' && $limit === 1) {
-              break;
+                break;
             }
         }
 
