@@ -27,18 +27,7 @@ class RakutenTag
 
     // エントリ内の [rakuten]search_word[/rakuten] を置換する。
     public function short_code($atts, $content = null) {
-        $classcode = str_replace(":", "", $content);
-
-        if ( $this->is_mobile() ){
-            $rakutencode = '<div class="rakuten_m_details">';
-            $rakutencode .= $this->get_data($content) . '</div>';
-        } else {
-            $rakutencode = '<div class="rakuten_details">' . $this->get_data(htmlspecialchars($content)) . '</div>';
-        }
-
         return $this->search($content);
-        return $rakutencode;
-
     }
 
     private function search($keyword, $limit = 1)
