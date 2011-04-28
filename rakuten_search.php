@@ -53,8 +53,8 @@ class RakutenLink {
     {
         require_once dirname(__FILE__) . '/Rakuten.php';
 
-        $dev_id = '434637cd52618592fbe80aa3c625a5b6';
-        $afi_id = '06b2c372.4935dd5e.06b2c373.d61e8826';
+        $dev_id = '';
+        $afi_id = '';
 
         if ($limit === 1) {
           $hits = '2';
