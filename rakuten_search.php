@@ -220,7 +220,7 @@ class RakutenTag
 }
 
 $RakutenTagAdmin = new RakutenTagAdmin;
-class RakutenAdmin
+class RakutenTagAdmin
 {
     public function __construct() {
         //add_action('admin_head', array($this, 'add_head'));
