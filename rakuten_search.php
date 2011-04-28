@@ -12,6 +12,7 @@ Author URI: http://project-p.jp/halt/
 
 @todo モバイルの時はモバイルのページに飛ばすようにする
 @todo 24h キャッシュをつける
+@todo Services_Rakutenへの依存をやめる
  */
 
 mb_internal_encoding("UTF-8");
@@ -42,6 +43,10 @@ class RakutenTag
 
     private function search($keyword, $limit = 1)
     {
+        if ($output = self::fetchCache($keyword)) {
+            return $output;
+        }
+
         require_once dirname(__FILE__) . '/Rakuten.php';
 
         if ($limit === 1) {
@@ -92,44 +97,47 @@ class RakutenTag
             }
         }
 
-        if ($this->use_cache === true) {
-            // @TODO implement me
-        }
-
         $output  = '<!-- Rakuten Plugin Start -->';
         $output .= $html;
         $output .= '<!-- Rakuten Plugin End -->';
+
+        self::createCache($keyword, $output);
+
         return $output;
     }
 
-    public function check_cache($itemcode)
+    private static function fetchCache($keyword)
     {
         // @TODO implement me
         return false;
 
-        $filename = dirname(__FILE__) . '/cache/' . str_replace(":", "_", htmlspecialchars($itemcode)) . '.xml';
+        $filename = dirname(__FILE__) . '/cache/';
+        $filename .= str_replace(" ", "_", $keyword) . '.txt';
 
-        if (file_exists($filename)) {
-            // キャッシュ作成日から24時間以上経過しているか
-            if ( time() <= filemtime($filename) + 86400) {
-                return date("Y/n/j H:i", filemtime($filename));
-            } else {
-                return false;
-            }
+        if (!file_exists($filename)) {
+            return false;
+        }
+
+        // キャッシュ作成日から24時間以上経過しているか
+        if (time() <= filemtime($filename) + 86400) {
+            return file_get_contents($filename);
         } else {
             return false;
         }
     }
 
-    public function create_cache($itemcode, $str){
-        if ( @file_put_contents(dirname(__FILE__) . '/cache/' . str_replace(":", "_", htmlspecialchars($itemcode)) . '.xml', $str) ){
-            return date("Y/n/j H:i");
-        } else {
-            return false;
+    private static function createCache($keyword, $output)
+    {
+        $filename = dirname(__FILE__) . '/cache/';
+        $filename .= str_replace(" ", "_", $keyword) . '.txt';
+
+        if (touch($filename)) {
+            file_put_contents($filename, $output);
         }
     }
 
-    public function is_mobile (){
+    public function is_mobile()
+    {
         $ua = $_SERVER['HTTP_USER_AGENT'];
 
         if (preg_match("/^DoCoMo\//i", $ua)) {
@@ -148,75 +156,6 @@ class RakutenTag
             return false;
         }
     }
-
-    /**
-     * get_data
-     */
-    public function get_data($itemcode)
-    {
-        mb_internal_encoding("UTF-8");
-        $rakuten_options = get_option('wp_rakuten_options');
-        $itemcode = htmlspecialchars($itemcode);
-
-        $output = '';
-
-        // キャッシュの存在確認
-        if ( $update_time = $this->check_cache($itemcode) ){
-            if ( $xml =  simplexml_load_string(@file_get_contents(dirname(__FILE__) . '/cache/' . str_replace(":", "_", $itemcode) . '.xml')) ){
-                $output = '<!-- cache -->';
-
-            } else {
-                return "Error: Failed to load cache file.";
-            }
-
-            // キャッシュがなければ取りに行く
-        } else {
-
-            if ( $rakuten_options['developer_id'] == '' ){
-                return "Error: Developers ID has not been set.";
-            }
-
-            if ( preg_match("/^(\d{3}):(\d+)/", $itemcode, $match) ){
-
-                if ( $match[1] == '001'){ // 001 = Books
-                    $url = 
-                        "http://api.rakuten.co.jp/rws/3.0/rest?developerId=" . $rakuten_options['developer_id'] . 
-                        "&affiliateId=" . $rakuten_options['affiliate_id'] . "&operation=BooksBookSearch&version=2009-04-15" . 
-                        "&isbn=" . $match[2];
-                }
-
-            } else {
-                $url = 
-                    "http://api.rakuten.co.jp/rws/3.0/rest?developerId=" . $rakuten_options['developer_id'] . 
-                    "&affiliateId=" . $rakuten_options['affiliate_id'] . "&operation=ItemCodeSearch&version=2010-06-30" . 
-                    "&itemCode=" . $itemcode;
-            }
-
-            $origin = @file_get_contents($url);
-            if ( !empty($origin) ) {
-
-                // http://d.hatena.ne.jp/ilo/20080101/1199199418 を参考にさせていただきつつ、処理
-                $origin = str_replace('header:Header', 'Header', $origin);
-                $origin = str_replace('itemCodeSearch:ItemCodeSearch', 'ItemCodeSearch', $origin);
-                $origin = str_replace('booksBookSearch:BooksBookSearch', 'BooksBookSearch', $origin);
-
-                $origin = str_replace($rakuten_options['developer_id'],'DELETED', $origin);
-
-                $xml = simplexml_load_string($origin);
-
-                if ($xml->Header->Status == "Success"){
-                    if ( !$update_time = $this->create_cache($itemcode, $origin) ){
-                        return "Error: Failed to create cache data.";
-                    }
-                }
-
-            } else {
-                return "Error: Failed to retrieve data for this request.";
-
-            }
-
-        }
-    }
 }
 
 $RakutenTagAdmin = new RakutenTagAdmin;
@@ -232,8 +171,8 @@ class RakutenTagAdmin
 
     public function add_menu() {
         add_options_page(
-            __('WP Rakuten Search','rakuten_search'),
-            __('WP Rakuten Search','rakuten_search'),
+            'WP Rakuten Tag',
+            'WP Rakuten Tag',
             'manage_options',
             __FILE__,
             array($this, 'options_page')
@@ -266,8 +205,7 @@ EOD;
         $rakuten_options = get_option('wp_rakuten_options');
 ?>
 <div class="wrap">
-
-<h2><?php _e('WP Rakuten Search 設定画面', 'rakuten_search'); ?></h2>
+<h2>WP Rakuten Tag 設定画面</h2>
 <form name="form" method="post" action="">
 <?php wp_nonce_field('rakuten_plugin-options'); ?>
 
