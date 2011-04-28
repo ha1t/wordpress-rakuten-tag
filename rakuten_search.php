@@ -1,29 +1,20 @@
 <?php
 /**
-Plugin Name: WP Rakuten Link
+Plugin Name: WP Rakuten Search
 Plugin URI: http://blog.newf.jp/myplugin/wp-rakuten-link/
-Description: 楽天市場の個別商品を検索し、指定した商品をエントリー上に表示します。利用にあたっては、楽天ウェブサービスのデベロッパーIDが別途必要です。
+Description: [rakuten][/rakuten]で囲まれたwordから楽天市場の個別商品を検索しエントリー上に表示します。利用にあたっては、楽天ウェブサービスのデベロッパーIDが別途必要です。
 Author: halt
-Version: 0.0.1
+Version: 0.0.2
 Author URI: http://project-p.jp/halt/
 
 /*
-[利用方法]
-	1. /wp-content/plugins/ 内に解凍したファイルをすべてアップロード
-	2. cache フォルダの属性を変更(chmod)。707 とかにして、書き込みできる状態にしてください。
-	3. プラグインを有効化した後、設定画面から必須項目を入力してください。
-	4. 投稿画面内に商品検索画面が出るので、あとは気の向くままに。
-
-	*. 詳しくは http://blog.newf.jp/2009/04/29/573/ を見ていただくといーです。
-
 [更新履歴]
-2009/04/29 0.1 : こさえた。
+2012/04/27 0.0.2 : githubに公開
 
 @todo モバイルの時はモバイルのページに飛ばすようにする
 @todo 24h キャッシュをつける
 */
 
-define('BLOG_URL', get_option('siteurl'));
 date_default_timezone_set('Asia/Tokyo');
 
 $RakutenLink = new RakutenLink();
