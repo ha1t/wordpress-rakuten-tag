@@ -3,24 +3,25 @@
  *
  *
  */
+require_once dirname(__FILE__) . '/Rakuten.php';
+
 class RakutenTag
 {
-    public function __construct() {
-        add_shortcode('rakuten', array($this, 'short_code'));
+    public static function addShortCode()
+    {
+        add_shortcode('rakuten', array('RakutenTag', 'short_code'));
     }
 
     // エントリ内の [rakuten]search_word[/rakuten] を置換する。
-    public function short_code($atts, $content = null) {
-        return $this->search($content);
+    public static function short_code($atts, $content = null) {
+        return self::search($content);
     }
 
-    private function search($keyword, $limit = 1)
+    private static function search($keyword, $limit = 1)
     {
         if ($output = self::fetchCache($keyword)) {
             return $output;
         }
-
-        require_once dirname(__FILE__) . '/Rakuten.php';
 
         if ($limit === 1) {
             $hits = '2';
@@ -106,27 +107,6 @@ class RakutenTag
 
         if (touch($filename)) {
             file_put_contents($filename, $output);
-        }
-    }
-
-    public function is_mobile()
-    {
-        $ua = $_SERVER['HTTP_USER_AGENT'];
-
-        if (preg_match("/^DoCoMo\//i", $ua)) {
-            return true;
-        } else if (preg_match("/^SoftBank/i", $ua)) { // SoftBank
-            return true;
-        } else if (preg_match("/^(Vodafone|MOT-)/i", $ua)) { // Vodafone 3G
-            return true;
-        } else if (preg_match("/^KDDI\-/i", $ua)) { // au (XHTML)
-            return true;
-        } else if (preg_match("/UP\.Browser/i", $ua)) { // au (HDML) TU-KA
-            return true;
-        } else if (preg_match("/WILLCOM/i", $ua)){ // WILLCOM Air EDGE
-            return true;
-        } else {
-            return false;
         }
     }
 }

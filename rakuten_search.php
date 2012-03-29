@@ -20,7 +20,7 @@ date_default_timezone_set('Asia/Tokyo');
 
 require_once dirname(__FILE__) . '/RakutenTag.php';
 
-$RakutenTag = new RakutenTag();
+RakutenTag::addShortCode();
 
 $RakutenTagAdmin = new RakutenTagAdmin;
 class RakutenTagAdmin
