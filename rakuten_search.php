@@ -4,10 +4,11 @@ Plugin Name: WP Rakuten Tag
 Plugin URI: http://blog.newf.jp/myplugin/wp-rakuten-link/
 Description: [rakuten][/rakuten]で囲まれたwordから楽天市場の個別商品を検索しエントリー上に表示します。利用にあたっては、楽天ウェブサービスのデベロッパーIDが別途必要です。WP Rakuten Linkを参考にさせていただきました。
 Author: halt
-Version: 0.0.3
+Version: 0.0.4
 Author URI: http://project-p.jp/halt/
 
 [更新履歴]
+2013/02/10 0.0.4 : キャッシュをうまく作れなくてエラーがでていた問題を修正
 2012/04/28 0.0.3 : かろうじて動くように
 2012/04/27 0.0.2 : githubに公開
 
@@ -97,11 +98,7 @@ class RakutenTag
 
     private static function fetchCache($keyword)
     {
-        // @TODO implement me
-        return false;
-
-        $filename = dirname(__FILE__) . '/cache/';
-        $filename .= str_replace(" ", "_", $keyword) . '.txt';
+        $filename = self::createCachePath($keyword);
 
         if (!file_exists($filename)) {
             return false;
@@ -115,14 +112,29 @@ class RakutenTag
         }
     }
 
+    /**
+     * @param string $keyword
+     * @return string
+     */
+    private static function createCachePath($keyword)
+    {
+        $dir = dirname(__FILE__) . '/cache/';
+
+        $keyword = str_replace(" ", "_space_", $keyword);
+        $keyword = str_replace("/", "_slash_", $keyword);
+
+        return $dir . $keyword . '.txt';
+    }
+
     private static function createCache($keyword, $output)
     {
-        $filename = dirname(__FILE__) . '/cache/';
-        $filename .= str_replace(" ", "_", $keyword) . '.txt';
+        $filename = self::createCachePath($keyword);
 
-        if (touch($filename)) {
-            file_put_contents($filename, $output);
+        if (!is_writable($filename)) {
+            throw new RuntimeException('cannot write file:' . $filename);
         }
+
+        file_put_contents($filename, $output);
     }
 
     public function is_mobile()
