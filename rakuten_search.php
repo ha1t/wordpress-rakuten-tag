@@ -28,7 +28,11 @@ class RakutenTag
 
     // エントリ内の [rakuten]search_word[/rakuten] を置換する。
     public function short_code($atts, $content = null) {
-        return $this->search($content);
+        try {
+            return $this->search($content);
+        } catch (RuntimeException $e) {
+            return $e->getMessage();
+        }
     }
 
     private function search($keyword, $limit = 1)
@@ -120,6 +124,10 @@ class RakutenTag
     {
         $dir = dirname(__FILE__) . '/cache/';
 
+        if (!is_writable($dir)) {
+            throw new RuntimeException('cannot write cache directory:' . $dir);
+        }
+
         $keyword = str_replace(" ", "_space_", $keyword);
         $keyword = str_replace("/", "_slash_", $keyword);
 
@@ -129,11 +137,6 @@ class RakutenTag
     private static function createCache($keyword, $output)
     {
         $filename = self::createCachePath($keyword);
-
-        if (!is_writable($filename)) {
-            throw new RuntimeException('cannot write file:' . $filename);
-        }
-
         file_put_contents($filename, $output);
     }
 
@@ -205,10 +208,18 @@ EOD;
 
         $rakuten_options = get_option('wp_rakuten_options');
 ?>
-<div class="wrap">
+<div class="wrap" xmlns="http://www.w3.org/1999/html">
 <h2>WP Rakuten Tag 設定画面</h2>
 <form name="form" method="post" action="">
 <?php wp_nonce_field('rakuten_plugin-options'); ?>
+
+    <p>
+<?php if (is_writable(dirname(__FILE__) . '/cache')): ?>
+    <strong>キャッシュディレクトリへの書き込み: OK</strong>
+<?php else: ?>
+    <strong style="color: red;">キャッシュディレクトリへの書き込み: NG</strong>
+<?php endif; ?>
+    </p>
 
 <table class="form-table"><tbody>
 <tr>
