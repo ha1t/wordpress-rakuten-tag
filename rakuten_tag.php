@@ -20,7 +20,8 @@ Author URI: http://project-p.jp/halt/
 mb_internal_encoding("UTF-8");
 date_default_timezone_set('Asia/Tokyo');
 
-require_once dirname(__FILE__) . '/RakutenTag.php';
+require_once dirname(__FILE__) . '/includes/RakutenTag.php';
+require_once dirname(__FILE__) . '/includes/RakutenTagAdmin.php';
 
 RakutenTag::addShortCode();
 
