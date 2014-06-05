@@ -82,11 +82,7 @@ class RakutenTag
 
     private static function fetchCache($keyword)
     {
-        // @TODO implement me
-        return false;
-
-        $filename = dirname(__FILE__) . '/cache/';
-        $filename .= str_replace(" ", "_", $keyword) . '.txt';
+        $filename = self::createCachePath($keyword);
 
         if (!file_exists($filename)) {
             return false;
@@ -100,14 +96,29 @@ class RakutenTag
         }
     }
 
+    /**
+     * @param string $keyword
+     * @return string
+     */
+    private static function createCachePath($keyword)
+    {
+        $dir = dirname(__FILE__) . '/cache/';
+
+        $keyword = str_replace(" ", "_space_", $keyword);
+        $keyword = str_replace("/", "_slash_", $keyword);
+
+        return $dir . $keyword . '.txt';
+    }
+
     private static function createCache($keyword, $output)
     {
-        $filename = dirname(__FILE__) . '/cache/';
-        $filename .= str_replace(" ", "_", $keyword) . '.txt';
+        $filename = self::createCachePath($keyword);
 
-        if (touch($filename)) {
-            file_put_contents($filename, $output);
+        if (!is_writable($filename)) {
+            throw new RuntimeException('cannot write file:' . $filename);
         }
+
+        file_put_contents($filename, $output);
     }
 }
 
