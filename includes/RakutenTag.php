@@ -102,7 +102,7 @@ class RakutenTag
      */
     private static function createCachePath($keyword)
     {
-        $dir = dirname(__FILE__) . '/cache/';
+        $dir = dirname(dirname(__FILE__)) . '/cache/';
 
         $keyword = str_replace(" ", "_space_", $keyword);
         $keyword = str_replace("/", "_slash_", $keyword);
@@ -114,7 +114,7 @@ class RakutenTag
     {
         $filename = self::createCachePath($keyword);
 
-        if (!is_writable($filename)) {
+        if (!touch($filename)) {
             throw new RuntimeException('cannot write file:' . $filename);
         }
 
