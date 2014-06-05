@@ -1,9 +1,4 @@
 <?php
-/**
- *
- *
- */
-
-require_once dirname(dirname(__FILE__)) . '/RakutenTag.php';
-require_once dirname(dirname(__FILE__)) . '/RakutenTagAdmin.php';
+require_once dirname(dirname(__FILE__)) . '/includes/RakutenTag.php';
+require_once dirname(dirname(__FILE__)) . '/includes/RakutenTagAdmin.php';
 
