@@ -1,9 +1,5 @@
 <?php
-/**
- *
- *
- */
-require_once dirname(__FILE__) . '/Rakuten.php';
+require_once dirname(__FILE__) . '/rws-php-sdk/autoload.php';
 
 class RakutenTag
 {
@@ -17,57 +13,38 @@ class RakutenTag
         return self::search($content);
     }
 
-    private static function search($keyword, $limit = 1)
+    private static function search($keyword)
     {
         if ($output = self::fetchCache($keyword)) {
             return $output;
         }
 
-        if ($limit === 1) {
-            $hits = '2';
-        } else {
-            $hits = $limit;
-        }
-
         $options = get_option('wp_rakuten_options');
 
         // 楽天商品検索
-        $api = Services_Rakuten::factory(
-            'ItemSearch',
-            $options['developer_id'],
-            $options['affiliate_id']
-        );
+        $client = new RakutenRws_Client();
+        $client->setApplicationId($options['developer_id']);
+        $client->setAffiliateId($options['affiliate_id']);
 
-        $api->execute(
+        $response = $client->execute(
+            'IchibaItemSearch',
             array(
                 'keyword' => $keyword,
                 'availability' => '1',
                 'sort' => '+affiliateRate',
-                'hits' => $hits,
+                'hits' => 1,
             )
         );
 
         $html = '';
-        $data = $api->getResultData();
 
-        // hitsが1だとitemそのものがきてしまうのでitemsにする
-        if ($data['hits'] == 1) {
-            $items = array($data['Items']['Item']);
-        } else {
-            $items = $data['Items']['Item'];
-        }
-
-        foreach ($items as $item) {
+        foreach ($response as $item) {
             if ((int)$item['imageFlag'] === 1) {
                 $html .= "<p>";
                 $html .= "<a href=\"{$item['affiliateUrl']}\">";
-                $html .= "<img src=\"{$item['mediumImageUrl']}\"><br />";
+                $html .= "<img src=\"{$item['mediumImageUrls'][0]['imageUrl']}\"><br />";
                 $html .= "{$item['itemName']}</a>";
                 $html .= "</p>";
-            }
-
-            if ($html !== '' && $limit === 1) {
-                break;
             }
         }
 
