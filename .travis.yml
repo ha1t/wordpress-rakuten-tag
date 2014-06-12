@@ -7,5 +7,4 @@ php:
   - hhvm
 
 script:
-  - pear install pear/HTTP_Request
   - phpunit --coverage-text -c ./tests/phpunit.xml
