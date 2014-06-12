@@ -14,7 +14,10 @@ class RakutenTagTest extends PHPUnit_Framework_TestCase
     public function testCreateCachePath()
     {
         $result = Test_Util::invokeStaticMethod('RakutenTag', 'createCachePath', array('a/b'));
-        $this->assertEquals('a_slash_b.txt', basename($result));
+        $this->assertFalse(strpos(basename($result), '/'));
+
+        $result = Test_Util::invokeStaticMethod('RakutenTag', 'createCachePath', array('a b'));
+        $this->assertFalse(strpos(basename($result), ' '));
     }
 }
 
