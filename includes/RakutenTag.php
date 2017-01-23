@@ -38,13 +38,15 @@ class RakutenTag
 
         $html = '';
 
-        foreach ($response as $item) {
-            if ((int)$item['imageFlag'] === 1) {
-                $html .= "<p>";
-                $html .= "<a href=\"{$item['affiliateUrl']}\">";
-                $html .= "<img src=\"{$item['mediumImageUrls'][0]['imageUrl']}\"><br />";
-                $html .= "{$item['itemName']}</a>";
-                $html .= "</p>";
+        if ($response->isOk()) {
+            foreach ($response as $item) {
+                if ((int)$item['imageFlag'] === 1) {
+                    $html .= "<p>";
+                    $html .= "<a href=\"{$item['affiliateUrl']}\">";
+                    $html .= "<img src=\"{$item['mediumImageUrls'][0]['imageUrl']}\"><br />";
+                    $html .= "{$item['itemName']}</a>";
+                    $html .= "</p>";
+                }
             }
         }
 
