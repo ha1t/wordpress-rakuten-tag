@@ -81,7 +81,7 @@ class RakutenTag
      */
     private static function createCachePath($keyword)
     {
-        $dir = dirname(dirname(__FILE__)) . '/cache/';
+        $dir = dirname(__FILE__) . '/cache/';
 
         $keyword = str_replace(" ", "_space_", $keyword);
         $keyword = str_replace("/", "_slash_", $keyword);

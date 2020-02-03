@@ -54,7 +54,7 @@ EOD;
 <?php wp_nonce_field('rakuten_plugin-options'); ?>
 
     <p>
-<?php if (is_writable(dirname(dirname(__FILE__)) . '/cache')): ?>
+<?php if (is_writable(dirname(__FILE__) . '/cache')): ?>
     <strong>キャッシュディレクトリへの書き込み: OK</strong>
 <?php else: ?>
     <strong style="color: red;">キャッシュディレクトリへの書き込み: NG</strong>
