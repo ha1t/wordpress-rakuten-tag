@@ -13,9 +13,9 @@ class RakutenTag
         return self::search($content);
     }
 
-    private static function search($keyword)
+    private static function search(string $keyword)
     {
-        if ($output = self::fetchCache($keyword)) {
+        if ($output = get_transient($keyword)) {
             return $output;
         }
 
@@ -54,50 +54,10 @@ class RakutenTag
         $output .= $html;
         $output .= '<!-- Rakuten Plugin End -->';
 
-        self::createCache($keyword, $output);
+        set_transient($keyword, $output, WEEK_IN_SECONDS + rand(0, WEEK_IN_SECONDS));
 
         return $output;
     }
 
-    private static function fetchCache($keyword)
-    {
-        $filename = self::createCachePath($keyword);
-
-        if (!file_exists($filename)) {
-            return false;
-        }
-
-        // キャッシュ作成日から24時間以上経過しているか
-        if (time() <= filemtime($filename) + 86400) {
-            return file_get_contents($filename);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @param string $keyword
-     * @return string
-     */
-    private static function createCachePath($keyword)
-    {
-        $dir = dirname(__FILE__) . '/cache/';
-
-        $keyword = str_replace(" ", "_space_", $keyword);
-        $keyword = str_replace("/", "_slash_", $keyword);
-
-        return $dir . $keyword . '.txt';
-    }
-
-    private static function createCache($keyword, $output)
-    {
-        $filename = self::createCachePath($keyword);
-
-        if (!touch($filename)) {
-            throw new RuntimeException('cannot write file:' . $filename);
-        }
-
-        file_put_contents($filename, $output);
-    }
 }
 
