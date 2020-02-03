@@ -1,10 +1,8 @@
 language: php
 
 php:
-#  - 5.2
-  - 5.3
   - 5.4
-  - hhvm
+  - 7.2
 
 script:
-  - phpunit --coverage-text -c ./tests/phpunit.xml
+  - phpunit --coverage-text -c phpunit.xml.dist
