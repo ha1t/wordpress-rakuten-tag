@@ -1,0 +1,10 @@
+{
+    "name": "ha1t/wordpress-rakuten-tag",
+    "require": {
+        "rakuten-ws/rws-php-sdk": "1.*"
+    },
+    "license": "MIT",
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    }
+}
