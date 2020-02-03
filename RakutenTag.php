@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__) . '/rws-php-sdk/autoload.php';
+require_once dirname(__FILE__) . '/vendor/rakuten-ws/rws-php-sdk/autoload.php';
 
 class RakutenTag
 {
