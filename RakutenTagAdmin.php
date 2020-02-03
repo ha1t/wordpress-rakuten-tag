@@ -53,14 +53,6 @@ EOD;
 <form name="form" method="post" action="">
 <?php wp_nonce_field('rakuten_plugin-options'); ?>
 
-    <p>
-<?php if (is_writable(dirname(__FILE__) . '/cache')): ?>
-    <strong>キャッシュディレクトリへの書き込み: OK</strong>
-<?php else: ?>
-    <strong style="color: red;">キャッシュディレクトリへの書き込み: NG</strong>
-<?php endif; ?>
-    </p>
-
 <table class="form-table"><tbody>
 <tr>
 <th><label for="developer_id"><?php _e('楽天デベロッパーID (必須)', 'rakuten_link'); ?></label></th>
