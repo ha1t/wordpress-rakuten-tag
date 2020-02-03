@@ -3,7 +3,7 @@
  *
  *
  */
-class RakutenTagTest extends PHPUnit_Framework_TestCase
+class RakutenTagTest extends TestCase
 {
     public function testCreateInstance()
     {

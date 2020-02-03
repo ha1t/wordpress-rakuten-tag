@@ -17,6 +17,7 @@ class Test_Util
   }
 }
 
-require_once dirname(dirname(__FILE__)) . '/includes/RakutenTag.php';
-require_once dirname(dirname(__FILE__)) . '/includes/RakutenTagAdmin.php';
+require_once dirname(__FILE__) . '/TestCase.php';
+require_once dirname(dirname(__FILE__)) . '/RakutenTag.php';
+require_once dirname(dirname(__FILE__)) . '/RakutenTagAdmin.php';
 
