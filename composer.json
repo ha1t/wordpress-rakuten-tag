@@ -4,6 +4,7 @@
         "rakuten-ws/rws-php-sdk": "1.*"
     },
     "license": "MIT",
+    "description": "wordpress plugin",
     "require-dev": {
         "phpunit/phpunit": "^8.5"
     },
