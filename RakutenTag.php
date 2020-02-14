@@ -1,19 +1,20 @@
 <?php
 require_once dirname(__FILE__) . '/vendor/rakuten-ws/rws-php-sdk/autoload.php';
 
-class RakutenTag
+final class RakutenTag
 {
-    public static function addShortCode()
+    public static function addShortCode() : void
     {
-        add_shortcode('rakuten', array('RakutenTag', 'short_code'));
+        add_shortcode('rakuten', ['RakutenTag', 'short_code']);
     }
 
     // エントリ内の [rakuten]search_word[/rakuten] を置換する。
-    public static function short_code($atts, $content = null) {
+    public static function short_code($atts, $content = null) : string
+    {
         return self::search($content);
     }
 
-    private static function search(string $keyword)
+    private static function search(string $keyword) : string
     {
         if ($output = get_transient($keyword)) {
             return $output;
@@ -28,12 +29,12 @@ class RakutenTag
 
         $response = $client->execute(
             'IchibaItemSearch',
-            array(
+            [
                 'keyword' => $keyword,
                 'availability' => '1',
                 'sort' => '+affiliateRate',
                 'hits' => 1,
-            )
+            ]
         );
 
         $html = '';

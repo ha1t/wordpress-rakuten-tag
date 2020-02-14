@@ -7,7 +7,7 @@ class RakutenTagAdmin
 {
     public function __construct() {
         //add_action('admin_head', array($this, 'add_head'));
-        add_action('admin_menu', array($this, 'add_menu'));
+        add_action('admin_menu', [$this, 'add_menu']);
     }
 
     public function add_head() {
@@ -19,16 +19,16 @@ class RakutenTagAdmin
             'WP Rakuten Tag',
             'manage_options',
             __FILE__,
-            array($this, 'options_page')
+            [$this, 'options_page']
         );
     }
 
     private function update_options()
     {
-        $rakuten_options = array(
+        $rakuten_options = [
             'developer_id'  => esc_attr($_POST['developer_id']),
             'affiliate_id'  => esc_attr($_POST['affiliate_id']),
-        );
+        ];
         update_option('wp_rakuten_options', $rakuten_options);
     }
 
